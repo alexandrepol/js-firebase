@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Firebase</title>
+
+</head>
+<body>
+    <h1>Ma première base firebase</h1>
+    <p>Dans ma base il y a :</p>
+    <div id="listClick">
+
+    </div>
+
+    <p>Ajouter dans la base</p>
+    <button id="addButton">ADD</button>
+
+
+
+
+
+
+    <script src="https://www.gstatic.com/firebasejs/3.6.8/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCm1MXrj-8rHvILuQocmhrvnQGX_2gEwgE",
+            authDomain: "b3-js-firebase.firebaseapp.com",
+            databaseURL: "https://b3-js-firebase.firebaseio.com",
+            storageBucket: "b3-js-firebase.appspot.com",
+            messagingSenderId: "454751489097"
+        };
+        firebase.initializeApp(config);
+
+        //Quand on clique sur le button ajoute un click
+        var button = document.getElementById("addButton");
+        button.addEventListener('click', function () {
+            console.log('click');
+            var id = Math.round(Math.random()*3600);
+            var date = new Date();
+            var time = date.getTime();
+            writeClickData(id,time);
+        });
+
+        //Ajouter des clicks avec le temps
+        function writeClickData(clickId, time) {
+            firebase.database().ref('clicks/' + clickId).set({
+                time : time
+            });
+        }
+
+        //Lire dans la base
+        var listClick = firebase.database().ref('clicks');
+        listClick.on('value', function(snapshot) {
+            var div = document.getElementById('listClick');
+            div.innerHTML = "";
+
+            snapshot.forEach(function(childSnapshot) {
+                var childData = childSnapshot.val();
+                console.log(childData);
+                var p = document.createElement("p");
+                var node = document.createTextNode(childData.time);
+                p.appendChild(node);
+                div.appendChild(p);
+
+            });
+        });
+    </script>
+    <script src="js/main.js"></script>
+</body>
+</html>
